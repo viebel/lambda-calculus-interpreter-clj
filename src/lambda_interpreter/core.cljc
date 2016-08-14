@@ -8,7 +8,6 @@
   (lambda-apply (eval-inner f env)
          (eval-inner x env)))
 
-; eval takes an expression and an environment to a value
 (defn eval-inner [e env]
   (cond
     (symbol? e)     (or (cadr (assq e env)) e)
