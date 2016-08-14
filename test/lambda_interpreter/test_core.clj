@@ -19,7 +19,7 @@
 
 (facts "eval functions"
        (tabular
-         (fact "a function should eval to itslef with the env"
+         (fact "a function should eval to a list with itslef and the env"
                (eval-inner ?in ?env) => ?out)
          ?in ?env ?out
          '(L x . x) '() '((L x . x))
@@ -28,7 +28,7 @@
          )
 
        (tabular
-         (fact "a function should eval to itself with no env" (lambda-eval ?in) => ?out)
+         (fact "a function should eval to a list with itself" (lambda-eval ?in) => ?out)
          ?in ?out
          '(L x . x) '((L x . x))))
 
@@ -50,10 +50,21 @@
          '(((λ x . (λ y . x)) a) b) 'a)
 
        (tabular
-         (fact "advanced"
+         (fact "advanced: closure"
                (lambda-eval ?in) => ?out)
          ?in ?out
-         '((L x . x) (L x . x)) '((L x . x))
-         '((L x . x) a) 'a
-         '(((L x . (L y . x)) a) b) 'a)
-       )
+         '((L x . (L y . x)) a) '((L y . x) (x a))
+         '((L m . (L f . (L n . (f n)))) (L f . (L n . n))) '((L f . (L n . (f n))) (m ((L f . (L n . n)))))
+         '((L m . (L f . (L n . ((m f) n)))) (L f . (L n . n))) '((L f . (L n . ((m f) n))) (m ((L f . (L n .  n)))))
+       ))
+
+
+(facts "understanding"
+       (eval-inner '(L m . (L f . (L n . (f n)))) '()) =>
+                   '((L m . (L f . (L n . (f n)))))
+       (eval-inner '(L f . (L n . n)) '()) =>
+                   '((L f . (L n . n)))
+       (apply-expression 
+         '((L m . (L f . (L n . (f n)))) (L f . (L n . n)))
+         '()) =>
+       '((L f . (L n . (f n))) (m ((L f . (L n . n))))))
