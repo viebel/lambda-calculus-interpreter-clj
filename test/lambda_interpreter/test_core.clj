@@ -2,9 +2,15 @@
   (:use [midje.sweet]
         [lambda-interpreter.core]))
 
-(facts "eval-inner symbols"
+(facts "eval symbols"
        (tabular
-         (fact "eval a symbol" (eval-inner ?in ?env) => ?out)
+         (fact "eval a symbol without env" (lambda-eval ?in) => ?in)
+         ?in 
+         'z 
+         'zz 
+         'abc) 
+       (tabular
+         (fact "eval a symbol with env" (eval-inner ?in ?env) => ?out)
          ?in ?env ?out
          'z '((z 2) (z 1)) 2
          'z '((a 2) (z 1)) 1
@@ -25,3 +31,29 @@
          (fact "a function should eval to itself with no env" (lambda-eval ?in) => ?out)
          ?in ?out
          '(L x . x) '((L x . x))))
+
+(facts "apply functions"
+       (tabular
+         (fact "a function should apply arguments to its body"
+               (lambda-eval ?in) => ?out)
+         ?in ?out
+         '((L x . x) (L x . x)) '((L x . x))
+         '((L x . x) a) 'a
+         '(((L x . (L y . x)) a) b) 'a)
+
+       (tabular
+         (fact "a function defined with λ should apply arguments to its body"
+               (lambda-eval ?in) => ?out)
+         ?in ?out
+         '((λ x . x) (λ x . x)) '((λ x . x))
+         '((λ x . x) a) 'a
+         '(((λ x . (λ y . x)) a) b) 'a)
+
+       (tabular
+         (fact "advanced"
+               (lambda-eval ?in) => ?out)
+         ?in ?out
+         '((L x . x) (L x . x)) '((L x . x))
+         '((L x . x) a) 'a
+         '(((L x . (L y . x)) a) b) 'a)
+       )
