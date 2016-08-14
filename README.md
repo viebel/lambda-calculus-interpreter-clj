@@ -1,4 +1,4 @@
-# lambda-calculus-interpreter-clj
+# lambda-calculus-interpreter-clj [![Build Status](https://travis-ci.org/viebel/lambda-calculus-interpreter-clj.svg?branch=master)](https://travis-ci.org/viebel/lambda-calculus-interpreter-clj)
 Lambda Calculus interpreter in clojure
 
 
