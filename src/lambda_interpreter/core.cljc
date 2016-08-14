@@ -8,6 +8,7 @@
   (lambda-apply (eval-inner f env)
          (eval-inner x env)))
 
+
 (defn eval-inner [e env]
   (cond
     (symbol? e)     (or (cadr (assq e env)) e)
